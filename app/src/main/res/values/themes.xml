@@ -2,4 +2,15 @@
 <resources>
 
     <style name="Theme.Voice2taskapp" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!-- Tema usado SOLO mientras carga el proceso, antes de que Compose pinte nada.
+         Evita la pantalla en blanco. Debe ser el tema de la Activity en el Manifest. -->
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
+        <item name="windowSplashScreenAnimationDuration">150</item>
+        <!-- Tras la animación nativa, pasa a tu tema normal ya existente -->
+        <item name="postSplashScreenTheme">@style/Theme.Voice2taskapp</item>
+    </style>
+
 </resources>

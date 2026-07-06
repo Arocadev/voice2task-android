@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App -->
+    <string name="app_name">Voice2Task</string>
+
+    <!-- Splash -->
+    <string name="splash_logo_desc">Voice2Task</string>
+
+    <!-- Login -->
+    <string name="login_email">Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_password_show">Show password</string>
+    <string name="login_password_hide">Hide password</string>
+    <string name="login_button">Sign in</string>
+    <string name="login_no_account">Don\'t have an account? Sign up</string>
+
+    <!-- Register -->
+    <string name="register_title">Create account</string>
+    <string name="register_username">Username</string>
+    <string name="register_email">Email</string>
+    <string name="register_password">Password</string>
+    <string name="register_password_show">Show password</string>
+    <string name="register_password_hide">Hide password</string>
+    <string name="register_button">Sign up</string>
+    <string name="register_have_account">Already have an account? Sign in</string>
+
+    <!-- Home -->
+    <string name="home_my_lists">My lists</string>
+    <string name="home_empty_title">No lists yet</string>
+    <string name="home_empty_subtitle">Tap + to create your first list</string>
+    <string name="home_new_list_title">New list</string>
+    <string name="home_new_list_name">Name</string>
+    <string name="home_create">Create</string>
+    <string name="home_cancel">Cancel</string>
+    <string name="home_logout">Sign out</string>
+
+    <!-- Nav tabs -->
+    <string name="tab_home">Home</string>
+    <string name="tab_important">Important</string>
+    <string name="tab_calendar">Calendar</string>
+    <string name="tab_settings">Settings</string>
+
+    <!-- Lista detail -->
+    <string name="lista_back">Back</string>
+    <string name="lista_record">Record audio</string>
+    <string name="lista_search">Search</string>
+    <string name="lista_search_placeholder">Search tasks…</string>
+    <string name="lista_empty_title">No tasks yet</string>
+    <string name="lista_empty_subtitle">Tap the microphone to create one</string>
+    <string name="lista_search_empty_title">No results</string>
+    <string name="lista_search_empty_subtitle">Try a different search</string>
+
+    <!-- Filtros -->
+    <string name="filter_all">All</string>
+    <string name="filter_pending">Pending</string>
+    <string name="filter_completed">Completed</string>
+    <string name="filter_important">Important</string>
+
+    <!-- Tarea card menú -->
+    <string name="tarea_menu_complete">Mark as completed</string>
+    <string name="tarea_menu_important">Mark as important</string>
+    <string name="tarea_menu_unimportant">Remove important</string>
+    <string name="tarea_menu_delete">Delete</string>
+    <string name="tarea_menu_options">Options</string>
+    <string name="tarea_completed_label">Completed</string>
+    <string name="tarea_important_label">Important</string>
+
+    <!-- Tarea detail -->
+    <string name="tarea_detail_title">Task detail</string>
+    <string name="tarea_detail_back">Back</string>
+    <string name="tarea_detail_edit">Edit</string>
+    <string name="tarea_detail_label_titulo">Title</string>
+    <string name="tarea_detail_label_prioridad">Priority</string>
+    <string name="tarea_detail_label_descripcion">Description</string>
+    <string name="tarea_detail_label_fecha">Due date</string>
+    <string name="tarea_detail_label_nota_voz">Original voice note</string>
+    <string name="tarea_detail_created">Created on %1$s</string>
+    <string name="tarea_detail_mark_complete">Mark as completed</string>
+
+    <!-- Editar tarea sheet -->
+    <string name="editar_title">Edit task</string>
+    <string name="editar_label_titulo">Title</string>
+    <string name="editar_label_descripcion">Description</string>
+    <string name="editar_label_fecha">Due date (YYYY-MM-DD)</string>
+    <string name="editar_fecha_placeholder">2026-12-31</string>
+    <string name="editar_label_prioridad">Priority</string>
+    <string name="editar_save">Save changes</string>
+    <string name="editar_error_empty">Title cannot be empty</string>
+
+    <!-- Prioridades -->
+    <string name="prioridad_baja">Low</string>
+    <string name="prioridad_media">Medium</string>
+    <string name="prioridad_alta">High</string>
+
+    <!-- Importantes -->
+    <string name="importantes_empty_title">No important tasks</string>
+    <string name="importantes_empty_subtitle">Mark tasks as important from the ⋮ menu</string>
+    <string name="importantes_count_one">%1$d important task</string>
+    <string name="importantes_count_other">%1$d important tasks</string>
+
+    <!-- Calendario -->
+    <string name="calendario_no_tasks">No tasks this day</string>
+    <string name="calendario_prev_month">Previous month</string>
+    <string name="calendario_next_month">Next month</string>
+
+    <!-- Grabar audio -->
+    <string name="grabar_tap_to_record">Tap to record</string>
+    <string name="grabar_listening">Listening…</string>
+    <string name="grabar_mic_desc">Microphone</string>
+    <string name="grabar_finish">Finish</string>
+    <string name="grabar_cancel">Cancel</string>
+
+    <!-- Procesando audio -->
+    <string name="procesando_title">Analyzing your voice…</string>
+    <string name="procesando_transcribing">Transcribing</string>
+    <string name="procesando_understanding">Understanding</string>
+    <string name="procesando_creating">Creating task</string>
+
+    <!-- Confirmación tarea audio -->
+    <string name="confirmacion_title">Review task</string>
+    <string name="confirmacion_subtitle">The AI created this task</string>
+    <string name="confirmacion_label_titulo">Title</string>
+    <string name="confirmacion_label_descripcion">Description</string>
+    <string name="confirmacion_label_lista">List</string>
+    <string name="confirmacion_label_fecha">Date</string>
+    <string name="confirmacion_label_prioridad">Priority</string>
+    <string name="confirmacion_label_transcripcion">Original transcription</string>
+    <string name="confirmacion_save">Save task</string>
+    <string name="confirmacion_edit_transcription">Edit transcription</string>
+
+    <!-- Error -->
+    <string name="error_title">Something went wrong</string>
+    <string name="error_retry">Retry</string>
+    <string name="error_cancel">Cancel</string>
+    <string name="error_load_tasks">Error loading tasks</string>
+    <string name="error_load_important">Error loading important tasks</string>
+    <string name="error_search">Search error</string>
+    <string name="error_edit">Error editing task</string>
+    <string name="error_audio">Error processing audio</string>
+    <string name="error_save">Error saving task</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_back">Back</string>
+    <string name="settings_integrations">Integrations</string>
+    <string name="settings_configured">Configured</string>
+    <string name="settings_not_configured">Not configured</string>
+    <string name="settings_coming_soon">Coming soon</string>
+    <string name="settings_groq_description">Required to process audio. Get it for free at console.groq.com</string>
+    <string name="settings_api_key_label">API Key</string>
+    <string name="settings_saved">Saved!</string>
+    <string name="settings_save">Save</string>
+
+    <!-- Lista eliminar -->
+    <string name="lista_delete">Delete</string>
+</resources>
