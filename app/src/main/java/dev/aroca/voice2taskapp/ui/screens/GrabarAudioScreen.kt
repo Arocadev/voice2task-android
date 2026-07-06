@@ -22,16 +22,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import dev.aroca.voice2taskapp.R
 import dev.aroca.voice2taskapp.data.model.AudioProcesamientoResponse
 import dev.aroca.voice2taskapp.data.repository.TokenRepository
 import dev.aroca.voice2taskapp.ui.theme.*
 import dev.aroca.voice2taskapp.viewmodel.GrabarAudioViewModel
 import dev.aroca.voice2taskapp.viewmodel.GrabarState
+import dev.aroca.voice2taskapp.viewmodel.PasosProcesando
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,14 +66,8 @@ fun GrabarAudioScreen(
         }
     }
 
-    // Mientras groqKey es null aún está cargando — no mostrar nada todavía
-
-    // Sin Groq Key configurada — mostrar aviso
     if (groqKey.isNullOrBlank()) {
-        PantallaSinGroqKey(
-            onCancelar = onDismiss,
-            onIrAjustes = onIrAjustes
-        )
+        PantallaSinGroqKey(onCancelar = onDismiss, onIrAjustes = onIrAjustes)
         return
     }
 
@@ -84,7 +81,7 @@ fun GrabarAudioScreen(
                 onCancelar = { viewModel.cancelar(); onDismiss() }
             )
         }
-        is GrabarState.Procesando -> PantallaProcessando()
+        is GrabarState.Procesando -> PantallaProcessando(paso = s.paso)
         is GrabarState.Propuesta -> {
             PantallaConfirmacion(
                 propuesta = s.respuesta,
@@ -106,55 +103,23 @@ fun GrabarAudioScreen(
 }
 
 @Composable
-private fun PantallaSinGroqKey(
-    onCancelar: () -> Unit,
-    onIrAjustes: () -> Unit
-) {
-    Box(
-        modifier = Modifier.fillMaxSize().background(Background),
-        contentAlignment = Alignment.Center
-    ) {
-        IconButton(
-            onClick = onCancelar,
-            modifier = Modifier.align(Alignment.TopStart).padding(16.dp)
-        ) {
-            Icon(Icons.Default.Close, contentDescription = "Cancelar", tint = TextSecondary)
+private fun PantallaSinGroqKey(onCancelar: () -> Unit, onIrAjustes: () -> Unit) {
+    Box(modifier = Modifier.fillMaxSize().background(Background), contentAlignment = Alignment.Center) {
+        IconButton(onClick = onCancelar, modifier = Modifier.align(Alignment.TopStart).padding(16.dp)) {
+            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.grabar_cancel), tint = TextSecondary)
         }
-
         Column(
             modifier = Modifier.padding(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Icon(Icons.Default.Key, contentDescription = null, tint = Primary, modifier = Modifier.size(56.dp))
-
-            Text(
-                "API Key de Groq necesaria",
-                color = TextPrimary,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center
-            )
-
-            Text(
-                "Para procesar audios necesitas una API Key de Groq. Es gratuita y puedes obtenerla en console.groq.com",
-                color = TextSecondary,
-                fontSize = 14.sp,
-                textAlign = TextAlign.Center
-            )
-
-            Button(
-                onClick = onIrAjustes,
-                modifier = Modifier.fillMaxWidth().height(52.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Primary)
-            ) {
-                Text("Ir a Ajustes", color = OnPrimary, fontWeight = FontWeight.SemiBold)
+            Text(stringResource(R.string.groq_key_required_title), color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center)
+            Text(stringResource(R.string.groq_key_required_desc), color = TextSecondary, fontSize = 14.sp, textAlign = TextAlign.Center)
+            Button(onClick = onIrAjustes, modifier = Modifier.fillMaxWidth().height(52.dp), shape = RoundedCornerShape(12.dp), colors = ButtonDefaults.buttonColors(containerColor = Primary)) {
+                Text(stringResource(R.string.groq_key_go_settings), color = OnPrimary, fontWeight = FontWeight.SemiBold)
             }
-
-            TextButton(onClick = onCancelar) {
-                Text("Cancelar", color = TextSecondary)
-            }
+            TextButton(onClick = onCancelar) { Text(stringResource(R.string.grabar_cancel), color = TextSecondary) }
         }
     }
 }
@@ -171,21 +136,14 @@ private fun PantallaGrabacion(
     val scale by pulseAnim.animateFloat(
         initialValue = 1f,
         targetValue = if (grabando) 1.12f else 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(700, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
+        animationSpec = infiniteRepeatable(animation = tween(700, easing = FastOutSlowInEasing), repeatMode = RepeatMode.Reverse),
         label = "scale"
     )
 
-    Box(
-        modifier = Modifier.fillMaxSize().background(Background),
-        contentAlignment = Alignment.Center
-    ) {
+    Box(modifier = Modifier.fillMaxSize().background(Background), contentAlignment = Alignment.Center) {
         IconButton(onClick = onCancelar, modifier = Modifier.align(Alignment.TopStart).padding(16.dp)) {
-            Icon(Icons.Default.Close, contentDescription = "Cancelar", tint = TextSecondary)
+            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.grabar_cancel), tint = TextSecondary)
         }
-
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(32.dp)) {
             Box(contentAlignment = Alignment.Center) {
                 if (grabando) {
@@ -197,13 +155,12 @@ private fun PantallaGrabacion(
                         .then(if (!grabando) Modifier.clickable { onIniciar() } else Modifier),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(Icons.Default.Mic, contentDescription = "Micrófono", tint = OnPrimary, modifier = Modifier.size(60.dp))
+                    Icon(Icons.Default.Mic, contentDescription = stringResource(R.string.grabar_mic_desc), tint = OnPrimary, modifier = Modifier.size(60.dp))
                 }
             }
-
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = if (grabando) "Escuchando..." else "Toca para grabar",
+                    text = if (grabando) stringResource(R.string.grabar_listening) else stringResource(R.string.grabar_tap_to_record),
                     color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.SemiBold
                 )
                 if (grabando) {
@@ -211,18 +168,12 @@ private fun PantallaGrabacion(
                     Text(String.format("%02d:%02d", segundos / 60, segundos % 60), color = Primary, fontSize = 32.sp, fontWeight = FontWeight.Bold)
                 }
             }
-
             if (grabando) WaveformBars()
-
             if (grabando) {
-                Button(
-                    onClick = onFinalizar,
-                    modifier = Modifier.fillMaxWidth(0.7f).height(52.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Primary)
-                ) { Text("Finalizar", color = OnPrimary, fontWeight = FontWeight.SemiBold) }
-
-                TextButton(onClick = onCancelar) { Text("Cancelar", color = TextSecondary) }
+                Button(onClick = onFinalizar, modifier = Modifier.fillMaxWidth(0.7f).height(52.dp), shape = RoundedCornerShape(12.dp), colors = ButtonDefaults.buttonColors(containerColor = Primary)) {
+                    Text(stringResource(R.string.grabar_finish), color = OnPrimary, fontWeight = FontWeight.SemiBold)
+                }
+                TextButton(onClick = onCancelar) { Text(stringResource(R.string.grabar_cancel), color = TextSecondary) }
             }
         }
     }
@@ -245,7 +196,13 @@ private fun WaveformBars() {
 }
 
 @Composable
-private fun PantallaProcessando() {
+private fun PantallaProcessando(paso: PasosProcesando) {
+    val texto = when (paso) {
+        PasosProcesando.TRANSCRIBIENDO -> stringResource(R.string.procesando_transcribing)
+        PasosProcesando.ENTENDIENDO    -> stringResource(R.string.procesando_understanding)
+        PasosProcesando.CREANDO        -> stringResource(R.string.procesando_creating)
+    }
+
     Box(modifier = Modifier.fillMaxSize().background(Background), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(32.dp)) {
             Box(
@@ -253,23 +210,43 @@ private fun PantallaProcessando() {
                 contentAlignment = Alignment.Center
             ) { CircularProgressIndicator(color = Primary, modifier = Modifier.size(48.dp), strokeWidth = 3.dp) }
 
-            Text("Analizando tu voz...", color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
+            Text(stringResource(R.string.procesando_title), color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
 
             Column(verticalArrangement = Arrangement.spacedBy(12.dp), horizontalAlignment = Alignment.Start, modifier = Modifier.padding(horizontal = 32.dp)) {
-                PasoProcessado("Transcribiendo", done = true)
-                PasoProcessado("Entendiendo", done = true)
-                PasoProcessado("Creando tarea", done = false)
+                PasoProcessado(
+                    texto = stringResource(R.string.procesando_transcribing),
+                    done = paso != PasosProcesando.TRANSCRIBIENDO,
+                    activo = paso == PasosProcesando.TRANSCRIBIENDO
+                )
+                PasoProcessado(
+                    texto = stringResource(R.string.procesando_understanding),
+                    done = paso == PasosProcesando.CREANDO,
+                    activo = paso == PasosProcesando.ENTENDIENDO
+                )
+                PasoProcessado(
+                    texto = stringResource(R.string.procesando_creating),
+                    done = false,
+                    activo = paso == PasosProcesando.CREANDO
+                )
             }
         }
     }
 }
 
 @Composable
-private fun PasoProcessado(texto: String, done: Boolean) {
+private fun PasoProcessado(texto: String, done: Boolean, activo: Boolean) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        if (done) Icon(Icons.Default.Check, contentDescription = null, tint = Primary, modifier = Modifier.size(18.dp))
-        else CircularProgressIndicator(color = Primary, modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
-        Text(texto, color = if (done) TextPrimary else TextSecondary, fontSize = 14.sp)
+        when {
+            done   -> Icon(Icons.Default.Check, contentDescription = null, tint = Primary, modifier = Modifier.size(18.dp))
+            activo -> CircularProgressIndicator(color = Primary, modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
+            else   -> Icon(Icons.Default.RadioButtonUnchecked, contentDescription = null, tint = TextMuted, modifier = Modifier.size(18.dp))
+        }
+        Text(
+            texto,
+            color = when { done -> TextPrimary; activo -> TextPrimary; else -> TextMuted },
+            fontSize = 14.sp,
+            fontWeight = if (activo) FontWeight.SemiBold else FontWeight.Normal
+        )
     }
 }
 
@@ -286,11 +263,7 @@ private fun PantallaConfirmacion(
     var descripcion by remember { mutableStateOf(propuesta.descripcion) }
     var prioridad by remember { mutableStateOf(propuesta.prioridad) }
 
-    val prioridadColor = when (prioridad) {
-        "ALTA" -> PriorityAlta
-        "MEDIA" -> PriorityMedia
-        else -> PriorityBaja
-    }
+    val prioridadColor = when (prioridad) { "ALTA" -> PriorityAlta; "MEDIA" -> PriorityMedia; else -> PriorityBaja }
 
     Scaffold(
         containerColor = Background,
@@ -298,65 +271,57 @@ private fun PantallaConfirmacion(
             TopAppBar(
                 title = {
                     Column {
-                        Text("Revisar tarea", color = TextPrimary, fontWeight = FontWeight.SemiBold)
-                        Text("La IA ha creado esta tarea", color = TextSecondary, fontSize = 12.sp)
+                        Text(stringResource(R.string.confirmacion_title), color = TextPrimary, fontWeight = FontWeight.SemiBold)
+                        Text(stringResource(R.string.confirmacion_subtitle), color = TextSecondary, fontSize = 12.sp)
                     }
                 },
                 navigationIcon = {
                     IconButton(onClick = onCancelar) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", tint = TextPrimary)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.lista_back), tint = TextPrimary)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Background)
             )
         },
         bottomBar = {
-            Column(
-                modifier = Modifier.fillMaxWidth().background(Background).padding(horizontal = 24.dp, vertical = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+            Column(modifier = Modifier.fillMaxWidth().background(Background).padding(horizontal = 24.dp, vertical = 16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(onClick = onConfirmar, modifier = Modifier.fillMaxWidth().height(52.dp), shape = RoundedCornerShape(12.dp), colors = ButtonDefaults.buttonColors(containerColor = Primary)) {
-                    Text("Guardar tarea", color = OnPrimary, fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(R.string.confirmacion_save), color = OnPrimary, fontWeight = FontWeight.SemiBold)
                 }
                 TextButton(onClick = onCancelar, modifier = Modifier.fillMaxWidth()) {
-                    Text("Editar transcripción", color = TextSecondary)
+                    Text(stringResource(R.string.confirmacion_edit_transcription), color = TextSecondary)
                 }
             }
         }
     ) { padding ->
-        Column(
-            modifier = Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            CampoConfirmacion(label = "Título") {
+        Column(modifier = Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            CampoConfirmacion(label = stringResource(R.string.confirmacion_label_titulo)) {
                 OutlinedTextField(value = titulo, onValueChange = { titulo = it }, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Primary, unfocusedBorderColor = Border, focusedLabelColor = Primary, cursorColor = Primary))
             }
-            CampoConfirmacion(label = "Descripción") {
+            CampoConfirmacion(label = stringResource(R.string.confirmacion_label_descripcion)) {
                 OutlinedTextField(value = descripcion, onValueChange = { descripcion = it }, modifier = Modifier.fillMaxWidth(), minLines = 2, shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Primary, unfocusedBorderColor = Border, focusedLabelColor = Primary, cursorColor = Primary))
             }
-            CampoConfirmacion(label = "Lista") {
+            CampoConfirmacion(label = stringResource(R.string.confirmacion_label_lista)) {
                 OutlinedTextField(value = listaNombre, onValueChange = {}, enabled = false, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(disabledBorderColor = Border, disabledTextColor = TextSecondary))
             }
             propuesta.fecha_limite?.let { fecha ->
-                CampoConfirmacion(label = "Fecha") {
+                CampoConfirmacion(label = stringResource(R.string.confirmacion_label_fecha)) {
                     OutlinedTextField(value = fecha.take(10), onValueChange = {}, enabled = false, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp),
                         trailingIcon = { Icon(Icons.Default.CalendarMonth, contentDescription = null, tint = TextMuted) },
                         colors = OutlinedTextFieldDefaults.colors(disabledBorderColor = Border, disabledTextColor = TextSecondary))
                 }
             }
-            CampoConfirmacion(label = "Prioridad") {
-                Row(
-                    modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).border(1.dp, Border, RoundedCornerShape(12.dp)).padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
+            CampoConfirmacion(label = stringResource(R.string.confirmacion_label_prioridad)) {
+                Row(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).border(1.dp, Border, RoundedCornerShape(12.dp)).padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Box(modifier = Modifier.size(10.dp).clip(CircleShape).background(prioridadColor))
                     Text(prioridad.lowercase().replaceFirstChar { it.uppercase() }, color = prioridadColor, fontWeight = FontWeight.SemiBold)
                 }
             }
-            CampoConfirmacion(label = "Transcripción original") {
+            CampoConfirmacion(label = stringResource(R.string.confirmacion_label_transcripcion)) {
                 Text(text = propuesta.audio_transcripcion, color = TextMuted, fontSize = 13.sp,
                     modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Surface).padding(12.dp))
             }
@@ -377,12 +342,12 @@ private fun PantallaError(mensaje: String, onReintentar: () -> Unit, onCancelar:
     Box(modifier = Modifier.fillMaxSize().background(Background), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.padding(32.dp)) {
             Icon(Icons.Default.ErrorOutline, contentDescription = null, tint = Error, modifier = Modifier.size(56.dp))
-            Text("Algo salió mal", color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
+            Text(stringResource(R.string.error_title), color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
             Text(mensaje, color = TextSecondary, fontSize = 14.sp, textAlign = TextAlign.Center)
             Button(onClick = onReintentar, shape = RoundedCornerShape(12.dp), colors = ButtonDefaults.buttonColors(containerColor = Primary)) {
-                Text("Reintentar", color = OnPrimary)
+                Text(stringResource(R.string.error_retry), color = OnPrimary)
             }
-            TextButton(onClick = onCancelar) { Text("Cancelar", color = TextSecondary) }
+            TextButton(onClick = onCancelar) { Text(stringResource(R.string.error_cancel), color = TextSecondary) }
         }
     }
 }

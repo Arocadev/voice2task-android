@@ -9,6 +9,8 @@ import dev.aroca.voice2taskapp.data.api.ApiClient
 import dev.aroca.voice2taskapp.data.api.ConfirmarTareaRequest
 import dev.aroca.voice2taskapp.data.model.AudioProcesamientoResponse
 import dev.aroca.voice2taskapp.data.model.Tarea
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -17,10 +19,16 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 
+enum class PasosProcesando {
+    TRANSCRIBIENDO,
+    ENTENDIENDO,
+    CREANDO
+}
+
 sealed class GrabarState {
     object Idle : GrabarState()
     object Grabando : GrabarState()
-    object Procesando : GrabarState()
+    data class Procesando(val paso: PasosProcesando = PasosProcesando.TRANSCRIBIENDO) : GrabarState()
     data class Propuesta(val respuesta: AudioProcesamientoResponse) : GrabarState()
     data class Confirmada(val tarea: Tarea) : GrabarState()
     data class Error(val message: String) : GrabarState()
@@ -72,12 +80,10 @@ class GrabarAudioViewModel : ViewModel() {
         try {
             mediaRecorder?.stop()
             mediaRecorder?.release()
-        } catch (e: Exception) {
-            // ignorar error de stop si no había grabación
-        }
+        } catch (e: Exception) { /* ignorar */ }
         mediaRecorder = null
 
-        _state.value = GrabarState.Procesando
+        _state.value = GrabarState.Procesando(PasosProcesando.TRANSCRIBIENDO)
         enviarAudio()
     }
 
@@ -101,9 +107,27 @@ class GrabarAudioViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
+                _state.value = GrabarState.Procesando(PasosProcesando.TRANSCRIBIENDO)
+
                 val requestBody = archivo.asRequestBody("audio/ogg".toMediaType())
                 val part = MultipartBody.Part.createFormData("audio", archivo.name, requestBody)
-                val respuesta = ApiClient.tareasApi.procesarAudio(part)
+
+                // Lanzar API en paralelo usando viewModelScope.async
+                val apiCall: Deferred<AudioProcesamientoResponse> = viewModelScope.async(kotlinx.coroutines.Dispatchers.IO) {
+                    ApiClient.tareasApi.procesarAudio(part)
+                }
+
+                // Mostrar cada paso mínimo tiempo para que se vea el spinner
+                kotlinx.coroutines.delay(1500)
+                _state.value = GrabarState.Procesando(PasosProcesando.ENTENDIENDO)
+
+                kotlinx.coroutines.delay(1000)
+                _state.value = GrabarState.Procesando(PasosProcesando.CREANDO)
+
+                // Esperar respuesta del backend (si aún no ha llegado)
+                val respuesta = apiCall.await()
+
+                kotlinx.coroutines.delay(500)
                 _state.value = GrabarState.Propuesta(respuesta)
             } catch (e: Exception) {
                 _state.value = GrabarState.Error(e.message ?: "Error al procesar el audio")

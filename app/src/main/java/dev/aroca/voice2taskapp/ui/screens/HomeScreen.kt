@@ -22,11 +22,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import dev.aroca.voice2taskapp.R
 import dev.aroca.voice2taskapp.data.model.Lista
 import dev.aroca.voice2taskapp.data.model.Tarea
 import dev.aroca.voice2taskapp.ui.theme.*
@@ -69,20 +71,20 @@ fun HomeScreen(
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Background),
                 actions = {
                     IconButton(onClick = onNavigateToSettings) {
-                        Icon(Icons.Default.Settings, contentDescription = "Ajustes", tint = TextMuted)
+                        Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.tab_settings), tint = TextMuted)
                     }
                 }
             )
         },
         bottomBar = {
             NavigationBar(containerColor = Surface, tonalElevation = 0.dp) {
-                NavItem(Icons.Default.Home, "Inicio", tabActual is HomeTab.Inicio) {
+                NavItem(Icons.Default.Home, stringResource(R.string.tab_home), tabActual is HomeTab.Inicio) {
                     tabActual = HomeTab.Inicio
                 }
-                NavItem(Icons.Default.Star, "Importante", tabActual is HomeTab.Importante) {
+                NavItem(Icons.Default.Star, stringResource(R.string.tab_important), tabActual is HomeTab.Importante) {
                     tabActual = HomeTab.Importante
                 }
-                NavItem(Icons.Default.CalendarMonth, "Calendario", tabActual is HomeTab.Calendario) {
+                NavItem(Icons.Default.CalendarMonth, stringResource(R.string.tab_calendar), tabActual is HomeTab.Calendario) {
                     tabActual = HomeTab.Calendario
                 }
             }
@@ -95,7 +97,7 @@ fun HomeScreen(
                     contentColor = OnPrimary,
                     shape = CircleShape
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = "Nueva lista")
+                    Icon(Icons.Default.Add, contentDescription = stringResource(R.string.home_new_list_title))
                 }
             }
         }
@@ -104,56 +106,26 @@ fun HomeScreen(
             when (tabActual) {
                 is HomeTab.Inicio -> {
                     when (val s = state) {
-                        is ListasState.Loading -> CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center),
-                            color = Primary
-                        )
-                        is ListasState.Error -> Text(
-                            s.message,
-                            color = Error,
-                            modifier = Modifier.align(Alignment.Center)
-                        )
+                        is ListasState.Loading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = Primary)
+                        is ListasState.Error -> Text(s.message, color = Error, modifier = Modifier.align(Alignment.Center))
                         is ListasState.Success -> {
                             if (s.listas.isEmpty()) {
                                 EmptyListasState(modifier = Modifier.align(Alignment.Center))
                             } else {
-                                LazyColumn(
-                                    contentPadding = PaddingValues(16.dp),
-                                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                                ) {
+                                LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                                     item {
-                                        Text(
-                                            "Mis listas",
-                                            color = TextSecondary,
-                                            fontSize = 12.sp,
-                                            fontWeight = FontWeight.Medium,
-                                            modifier = Modifier.padding(bottom = 4.dp)
-                                        )
+                                        Text(stringResource(R.string.home_my_lists), color = TextSecondary, fontSize = 12.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(bottom = 4.dp))
                                     }
                                     items(s.listas) { lista ->
-                                        ListaCard(
-                                            lista = lista,
-                                            onClick = { onNavigateToLista(lista.id, lista.nombre) },
-                                            onEliminar = { listasViewModel.eliminarLista(lista.id) }
-                                        )
+                                        ListaCard(lista = lista, onClick = { onNavigateToLista(lista.id, lista.nombre) }, onEliminar = { listasViewModel.eliminarLista(lista.id) })
                                     }
                                 }
                             }
                         }
                     }
                 }
-                is HomeTab.Importante -> {
-                    ImportantesScreen(
-                        onVerDetalle = { tarea -> onNavigateToTareaDetalle(tarea) },
-                        viewModel = tareasViewModel
-                    )
-                }
-                is HomeTab.Calendario -> {
-                    CalendarioScreen(
-                        onVerDetalle = { tarea -> onNavigateToTareaDetalle(tarea) },
-                        viewModel = tareasViewModel
-                    )
-                }
+                is HomeTab.Importante -> ImportantesScreen(onVerDetalle = { tarea -> onNavigateToTareaDetalle(tarea) }, viewModel = tareasViewModel)
+                is HomeTab.Calendario -> CalendarioScreen(onVerDetalle = { tarea -> onNavigateToTareaDetalle(tarea) }, viewModel = tareasViewModel)
             }
         }
     }
@@ -162,61 +134,37 @@ fun HomeScreen(
         AlertDialog(
             onDismissRequest = { showCrearLista = false; nombreNueva = "" },
             containerColor = Surface,
-            title = { Text("Nueva lista", color = TextPrimary) },
+            title = { Text(stringResource(R.string.home_new_list_title), color = TextPrimary) },
             text = {
                 OutlinedTextField(
-                    value = nombreNueva,
-                    onValueChange = { nombreNueva = it },
-                    label = { Text("Nombre") },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    singleLine = true,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Primary,
-                        unfocusedBorderColor = Border,
-                        focusedLabelColor = Primary,
-                        cursorColor = Primary
-                    )
+                    value = nombreNueva, onValueChange = { nombreNueva = it },
+                    label = { Text(stringResource(R.string.home_new_list_name)) },
+                    modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Primary, unfocusedBorderColor = Border, focusedLabelColor = Primary, cursorColor = Primary)
                 )
             },
             confirmButton = {
                 Button(
-                    onClick = {
-                        if (nombreNueva.isNotBlank()) {
-                            listasViewModel.crearLista(nombreNueva, null)
-                            nombreNueva = ""
-                            showCrearLista = false
-                        }
-                    },
+                    onClick = { if (nombreNueva.isNotBlank()) { listasViewModel.crearLista(nombreNueva, null); nombreNueva = ""; showCrearLista = false } },
                     colors = ButtonDefaults.buttonColors(containerColor = Primary)
-                ) { Text("Crear", color = OnPrimary) }
+                ) { Text(stringResource(R.string.home_create), color = OnPrimary) }
             },
             dismissButton = {
-                TextButton(onClick = { showCrearLista = false; nombreNueva = "" }) {
-                    Text("Cancelar", color = TextSecondary)
-                }
+                TextButton(onClick = { showCrearLista = false; nombreNueva = "" }) { Text(stringResource(R.string.home_cancel), color = TextSecondary) }
             }
         )
     }
 }
 
 @Composable
-private fun RowScope.NavItem(
-    icon: ImageVector,
-    label: String,
-    selected: Boolean,
-    onClick: () -> Unit
-) {
+private fun RowScope.NavItem(icon: ImageVector, label: String, selected: Boolean, onClick: () -> Unit) {
     NavigationBarItem(
         icon = { Icon(icon, contentDescription = label) },
         label = { Text(label, fontSize = 11.sp) },
-        selected = selected,
-        onClick = onClick,
+        selected = selected, onClick = onClick,
         colors = NavigationBarItemDefaults.colors(
-            selectedIconColor = Primary,
-            selectedTextColor = Primary,
-            unselectedIconColor = TextMuted,
-            unselectedTextColor = TextMuted,
+            selectedIconColor = Primary, selectedTextColor = Primary,
+            unselectedIconColor = TextMuted, unselectedTextColor = TextMuted,
             indicatorColor = Primary.copy(alpha = 0.12f)
         )
     )
@@ -224,50 +172,29 @@ private fun RowScope.NavItem(
 
 @Composable
 private fun EmptyListasState(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
+    Column(modifier = modifier.padding(32.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text("📋", fontSize = 48.sp)
-        Text("Sin listas todavía", style = MaterialTheme.typography.titleMedium, color = TextPrimary, fontWeight = FontWeight.SemiBold)
-        Text("Pulsa + para crear tu primera lista", style = MaterialTheme.typography.bodyMedium, color = TextMuted, textAlign = TextAlign.Center)
+        Text(stringResource(R.string.home_empty_title), style = MaterialTheme.typography.titleMedium, color = TextPrimary, fontWeight = FontWeight.SemiBold)
+        Text(stringResource(R.string.home_empty_subtitle), style = MaterialTheme.typography.bodyMedium, color = TextMuted, textAlign = TextAlign.Center)
     }
 }
 
 @Composable
 fun ListaCard(lista: Lista, onClick: () -> Unit, onEliminar: () -> Unit) {
     var showMenu by remember { mutableStateOf(false) }
-    val color = try {
-        Color(android.graphics.Color.parseColor(lista.color ?: "#14B8A6"))
-    } catch (e: Exception) {
-        Primary
-    }
+    val color = try { Color(android.graphics.Color.parseColor(lista.color ?: "#14B8A6")) } catch (e: Exception) { Primary }
 
-    Card(
-        modifier = Modifier.fillMaxWidth().clickable { onClick() },
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Surface)
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(14.dp)
-        ) {
+    Card(modifier = Modifier.fillMaxWidth().clickable { onClick() }, shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Surface)) {
+        Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
             Box(modifier = Modifier.size(12.dp).clip(CircleShape).background(color))
-            Text(
-                text = lista.nombre,
-                style = MaterialTheme.typography.titleMedium,
-                color = TextPrimary,
-                modifier = Modifier.weight(1f)
-            )
+            Text(text = lista.nombre, style = MaterialTheme.typography.titleMedium, color = TextPrimary, modifier = Modifier.weight(1f))
             Box {
                 IconButton(onClick = { showMenu = true }, modifier = Modifier.size(32.dp)) {
-                    Icon(Icons.Default.MoreVert, contentDescription = "Opciones", tint = TextMuted, modifier = Modifier.size(20.dp))
+                    Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.tarea_menu_options), tint = TextMuted, modifier = Modifier.size(20.dp))
                 }
                 DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }, containerColor = SurfaceVariant) {
                     DropdownMenuItem(
-                        text = { Text("Eliminar", color = Error) },
+                        text = { Text(stringResource(R.string.lista_delete), color = Error) },
                         leadingIcon = { Icon(Icons.Default.Delete, contentDescription = null, tint = Error, modifier = Modifier.size(18.dp)) },
                         onClick = { showMenu = false; onEliminar() }
                     )

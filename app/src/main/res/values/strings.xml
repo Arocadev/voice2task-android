@@ -142,7 +142,9 @@
     <!-- Settings -->
     <string name="settings_title">Ajustes</string>
     <string name="settings_back">Volver</string>
-    <string name="settings_integrations">Integraciones</string>
+    <string name="settings_section_cuenta">Cuenta</string>
+    <string name="settings_section_integraciones">Integraciones</string>
+    <string name="settings_section_guia">Guía</string>
     <string name="settings_configured">Configurada</string>
     <string name="settings_not_configured">No configurada</string>
     <string name="settings_coming_soon">Próximamente</string>
@@ -150,6 +152,44 @@
     <string name="settings_api_key_label">API Key</string>
     <string name="settings_saved">¡Guardado!</string>
     <string name="settings_save">Guardar</string>
+    <string name="settings_integrations_title">Integraciones</string>
+    <string name="settings_integrations_subtitle">Groq, Trello, Notion y más</string>
+    <string name="settings_groq_key">Groq API Key</string>
+    <string name="settings_trello">Trello</string>
+    <string name="settings_google_calendar">Google Calendar</string>
+    <string name="settings_notion">Notion</string>
+    <string name="settings_change_password">Cambiar contraseña</string>
+    <string name="settings_current_password">Contraseña actual</string>
+    <string name="settings_new_password">Nueva contraseña</string>
+    <string name="settings_confirm_password">Repite la nueva contraseña</string>
+    <string name="settings_passwords_no_match">Las contraseñas no coinciden</string>
+    <string name="settings_save_password">Guardar contraseña</string>
+    <string name="settings_password_changed">¡Contraseña cambiada correctamente!</string>
+    <string name="settings_fill_all_fields">Rellena todos los campos</string>
+    <string name="settings_passwords_differ">Las contraseñas nuevas no coinciden</string>
+    <string name="settings_password_same">La nueva contraseña debe ser diferente a la actual</string>
+    <string name="settings_password_too_short">La contraseña debe tener al menos 8 caracteres</string>
+    <string name="settings_how_it_works">Cómo funciona</string>
+    <string name="settings_how_it_works_subtitle">Aprende a usar Voice2Task</string>
+    <string name="settings_guide_prereq_title">Requisito previo</string>
+    <string name="settings_guide_prereq_desc">Para usar Voice2Task necesitas una API Key de Groq (gratuita). Consíguela en console.groq.com y añádela en Integraciones.</string>
+    <string name="settings_guide_speak_title">Habla</string>
+    <string name="settings_guide_speak_desc">Abre una lista, pulsa el micrófono y describe tu tarea en voz alta. Puedes incluir fechas, prioridad o cualquier detalle.</string>
+    <string name="settings_guide_review_title">Revisa y confirma</string>
+    <string name="settings_guide_review_desc">La IA convierte tu nota en una tarea estructurada con título, descripción y fecha. Puedes editarla antes de guardar.</string>
+    <string name="settings_guide_important_title">Marca como importante</string>
+    <string name="settings_guide_important_desc">Pulsa ⋮ en cualquier tarea para marcarla como importante. Aparecerá en la tab Importante para acceso rápido.</string>
+    <string name="settings_guide_calendar_title">Calendario</string>
+    <string name="settings_guide_calendar_desc">Las tareas con fecha límite aparecen en el calendario. Pulsa cualquier día para ver las tareas de ese día.</string>
+    <string name="settings_logout">Cerrar sesión</string>
+    <string name="settings_logout_title">Cerrar sesión</string>
+    <string name="settings_logout_confirm">¿Seguro que quieres cerrar sesión?</string>
+    <string name="settings_logout_cancel">Cancelar</string>
+
+    <!-- Sin Groq Key -->
+    <string name="groq_key_required_title">API Key de Groq necesaria</string>
+    <string name="groq_key_required_desc">Para procesar audios necesitas una API Key de Groq. Es gratuita y puedes obtenerla en console.groq.com</string>
+    <string name="groq_key_go_settings">Ir a Ajustes</string>
 
     <!-- Lista eliminar -->
     <string name="lista_delete">Eliminar</string>

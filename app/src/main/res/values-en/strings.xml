@@ -142,7 +142,9 @@
     <!-- Settings -->
     <string name="settings_title">Settings</string>
     <string name="settings_back">Back</string>
-    <string name="settings_integrations">Integrations</string>
+    <string name="settings_section_cuenta">Account</string>
+    <string name="settings_section_integraciones">Integrations</string>
+    <string name="settings_section_guia">Guide</string>
     <string name="settings_configured">Configured</string>
     <string name="settings_not_configured">Not configured</string>
     <string name="settings_coming_soon">Coming soon</string>
@@ -150,6 +152,44 @@
     <string name="settings_api_key_label">API Key</string>
     <string name="settings_saved">Saved!</string>
     <string name="settings_save">Save</string>
+    <string name="settings_integrations_title">Integrations</string>
+    <string name="settings_integrations_subtitle">Groq, Trello, Notion and more</string>
+    <string name="settings_groq_key">Groq API Key</string>
+    <string name="settings_trello">Trello</string>
+    <string name="settings_google_calendar">Google Calendar</string>
+    <string name="settings_notion">Notion</string>
+    <string name="settings_change_password">Change password</string>
+    <string name="settings_current_password">Current password</string>
+    <string name="settings_new_password">New password</string>
+    <string name="settings_confirm_password">Repeat new password</string>
+    <string name="settings_passwords_no_match">Passwords do not match</string>
+    <string name="settings_save_password">Save password</string>
+    <string name="settings_password_changed">Password changed successfully!</string>
+    <string name="settings_fill_all_fields">Fill in all fields</string>
+    <string name="settings_passwords_differ">New passwords do not match</string>
+    <string name="settings_password_same">New password must be different from current</string>
+    <string name="settings_password_too_short">Password must be at least 8 characters</string>
+    <string name="settings_how_it_works">How it works</string>
+    <string name="settings_how_it_works_subtitle">Learn how to use Voice2Task</string>
+    <string name="settings_guide_prereq_title">Prerequisite</string>
+    <string name="settings_guide_prereq_desc">To use Voice2Task you need a Groq API Key (free). Get it at console.groq.com and add it in Integrations.</string>
+    <string name="settings_guide_speak_title">Speak</string>
+    <string name="settings_guide_speak_desc">Open a list, tap the microphone and describe your task out loud. You can include dates, priority or any detail.</string>
+    <string name="settings_guide_review_title">Review and confirm</string>
+    <string name="settings_guide_review_desc">The AI turns your note into a structured task with title, description and date. You can edit it before saving.</string>
+    <string name="settings_guide_important_title">Mark as important</string>
+    <string name="settings_guide_important_desc">Tap ⋮ on any task to mark it as important. It will appear in the Important tab for quick access.</string>
+    <string name="settings_guide_calendar_title">Calendar</string>
+    <string name="settings_guide_calendar_desc">Tasks with a due date appear in the calendar. Tap any day to see the tasks for that day.</string>
+    <string name="settings_logout">Sign out</string>
+    <string name="settings_logout_title">Sign out</string>
+    <string name="settings_logout_confirm">Are you sure you want to sign out?</string>
+    <string name="settings_logout_cancel">Cancel</string>
+
+    <!-- Sin Groq Key -->
+    <string name="groq_key_required_title">Groq API Key required</string>
+    <string name="groq_key_required_desc">To process audio you need a Groq API Key. It\'s free and you can get it at console.groq.com</string>
+    <string name="groq_key_go_settings">Go to Settings</string>
 
     <!-- Lista eliminar -->
     <string name="lista_delete">Delete</string>
