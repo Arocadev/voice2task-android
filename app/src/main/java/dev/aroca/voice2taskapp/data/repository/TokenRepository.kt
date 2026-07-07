@@ -15,12 +15,26 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "vo
 class TokenRepository(private val context: Context) {
 
     companion object {
-        val TOKEN_KEY = stringPreferencesKey("jwt_token")
-        val GROQ_KEY = stringPreferencesKey("groq_api_key")
+        val TOKEN_KEY                  = stringPreferencesKey("jwt_token")
+        val GROQ_KEY                   = stringPreferencesKey("groq_api_key")
+        val TRELLO_API_KEY             = stringPreferencesKey("trello_api_key")
+        val TRELLO_TOKEN               = stringPreferencesKey("trello_token")
+        val TRELLO_LIST_ID             = stringPreferencesKey("trello_list_id")
+        val TRELLO_LIST_NAME           = stringPreferencesKey("trello_list_name")
+        val NOTION_TOKEN               = stringPreferencesKey("notion_token")
+        val NOTION_DATABASE_ID         = stringPreferencesKey("notion_database_id")
+        val NOTION_DATABASE_NAME       = stringPreferencesKey("notion_database_name")
     }
 
-    val token: Flow<String?> = context.dataStore.data.map { it[TOKEN_KEY] }
-    val groqKey: Flow<String?> = context.dataStore.data.map { it[GROQ_KEY] }
+    val token: Flow<String?>              = context.dataStore.data.map { it[TOKEN_KEY] }
+    val groqKey: Flow<String?>            = context.dataStore.data.map { it[GROQ_KEY] }
+    val trelloApiKey: Flow<String?>       = context.dataStore.data.map { it[TRELLO_API_KEY] }
+    val trelloToken: Flow<String?>        = context.dataStore.data.map { it[TRELLO_TOKEN] }
+    val trelloListId: Flow<String?>       = context.dataStore.data.map { it[TRELLO_LIST_ID] }
+    val trelloListName: Flow<String?>     = context.dataStore.data.map { it[TRELLO_LIST_NAME] }
+    val notionToken: Flow<String?>        = context.dataStore.data.map { it[NOTION_TOKEN] }
+    val notionDatabaseId: Flow<String?>   = context.dataStore.data.map { it[NOTION_DATABASE_ID] }
+    val notionDatabaseName: Flow<String?> = context.dataStore.data.map { it[NOTION_DATABASE_NAME] }
 
     suspend fun saveToken(token: String) {
         context.dataStore.edit { it[TOKEN_KEY] = token }
@@ -34,5 +48,30 @@ class TokenRepository(private val context: Context) {
 
     suspend fun saveGroqKey(key: String) {
         context.dataStore.edit { it[GROQ_KEY] = key }
+    }
+
+    suspend fun saveTrello(apiKey: String, token: String) {
+        context.dataStore.edit {
+            it[TRELLO_API_KEY] = apiKey
+            it[TRELLO_TOKEN] = token
+        }
+    }
+
+    suspend fun saveTrelloList(id: String, name: String) {
+        context.dataStore.edit {
+            it[TRELLO_LIST_ID] = id
+            it[TRELLO_LIST_NAME] = name
+        }
+    }
+
+    suspend fun saveNotion(token: String) {
+        context.dataStore.edit { it[NOTION_TOKEN] = token }
+    }
+
+    suspend fun saveNotionDatabase(id: String, name: String) {
+        context.dataStore.edit {
+            it[NOTION_DATABASE_ID] = id
+            it[NOTION_DATABASE_NAME] = name
+        }
     }
 }
