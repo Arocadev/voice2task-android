@@ -182,4 +182,3 @@ Guardar → Tarea creada en todos los destinos seleccionados
 ## 📄 Licencia
 
 Proyecto personal en desarrollo. No licenciado para uso comercial.  
-*Personal project under development. Not licensed for commercial use.*
