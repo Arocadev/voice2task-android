@@ -6,51 +6,64 @@
 *Android app that converts voice notes into structured tasks using AI*
 
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0-purple?logo=kotlin)](https://kotlinlang.org)
-[![Jetpack Compose](https://img.shields.io/badge/Jetpack_Compose-BOM_2025-green?logo=android)](https://developer.android.com/jetpack/compose)
-[![Android](https://img.shields.io/badge/Android-8.0%2B-green?logo=android)](https://android.com)
-[![Groq](https://img.shields.io/badge/AI-Groq-orange)](https://console.groq.com)
-
-> Evolución del proyecto [bot-to-trello](https://github.com/ArocaDev/bot-to-trello): de un bot de Telegram a una app Android propia.
+[![Jetpack Compose](https://img.shields.io/badge/Jetpack_Compose-latest-green?logo=android)](https://developer.android.com/jetpack/compose)
+[![Android](https://img.shields.io/badge/Android-6.0+-green?logo=android)](https://android.com)
+[![API](https://img.shields.io/badge/Backend-FastAPI-green?logo=fastapi)](https://github.com/ArocaDev/voice2task)
 
 </div>
 
 ---
 
-## ¿Qué es Voice2Task?
+## ¿Qué es esto?
 
-Voice2Task convierte notas de voz en tareas estructuradas usando inteligencia artificial. El problema que resuelve es simple: se te ocurre algo mientras estás haciendo otra cosa y si no lo apuntas en ese momento te olvidas. Pues lo dices y listo.
+App Android nativa que graba una nota de voz, la envía al backend, y devuelve una tarea estructurada con título, descripción, fecha límite y prioridad — generada automáticamente por IA. La tarea se puede guardar en Voice2Task, Trello, Notion, o en los tres a la vez.
 
-Puedes guardar la tarea en la propia app, mandarla a Trello, a Notion, o a los tres a la vez.
+---
+
+## 📸 Capturas
+
+<div align="center">
+
+| Login | Registro | Mis listas | Tareas |
+|:-:|:-:|:-:|:-:|
+| <img src="assets/login.png" width="200" /> | <img src="assets/registro.png" width="200" /> | <img src="assets/listas.png" width="200" /> | <img src="assets/subtareas.png" width="200" /> |
+
+| Grabando | Calendario | Integraciones |
+|:-:|:-:|:-:|
+| <img src="assets/audio.jpeg" width="200" /> | <img src="assets/calendario.png" width="200" /> | <img src="assets/integraciones.png" width="200" /> |
+
+</div>
+
+---
+
+## 🎬 Demo
+
+**Grabación y tarea**
+
+<img src="assets/demo-audio.gif" width="300" />
+
+**Ajustes e integraciones**
+
+<img src="assets/demo-settings.gif" width="300" />
+
+**Calendario**
+
+<img src="assets/demo-calendario.gif" width="300" />
 
 ---
 
 ## ✨ Funcionalidades
 
-### 🎙️ Captura por voz
-Graba una nota de voz describiendo la tarea. La IA la transcribe con Whisper, extrae título, descripción, fecha límite y prioridad, y te la presenta para revisar antes de guardar.
-
-### 📋 Gestión de tareas y listas
-Organiza tus tareas en listas personalizadas. Filtra por estado (todas, pendientes, completadas, importantes), busca por texto y consulta el detalle completo de cada tarea.
-
-### 📅 Calendario
-Vista mensual con las tareas que tienen fecha límite marcadas como puntos. Toca cualquier día para ver las tareas de ese día.
-
-### ⭐ Importantes
-Tab dedicada a las tareas marcadas como importantes para acceso rápido.
-
-### 🔌 Integraciones externas
-Conecta Trello y Notion desde los ajustes. Al crear una tarea por voz, elige en qué destinos guardarla: Voice2Task, Trello, Notion, o todos a la vez.
-
-### ⚙️ Ajustes
-- Groq API Key para procesar los audios
-- Trello: selección de tablero y lista en 3 pasos
-- Notion: selección de base de datos
-- Cambio de contraseña
-- Guía de uso integrada
-- FAQ y aviso legal
-
-### 🌍 Bilingüe
-Interfaz completa en español e inglés. Cambia automáticamente según el idioma del dispositivo.
+- Grabación de voz con **MediaRecorder** en formato OGG/Opus
+- Transcripción con **Groq Whisper Large V3 Turbo** vía backend
+- Extracción estructurada con LLM — título, descripción, fecha límite, prioridad
+- Confirmación antes de guardar — la IA no es perfecta, tú decides
+- Gestión completa de tareas y listas con filtros, búsqueda y ordenación
+- Calendario mensual con tareas por fecha
+- Tab de importantes con estrella
+- Integraciones con **Trello** y **Notion** en flujo de 3 pasos
+- Auth completo con JWT y refresh tokens
+- Bilingüe ES/EN
 
 ---
 
@@ -59,106 +72,50 @@ Interfaz completa en español e inglés. Cambia automáticamente según el idiom
 | Capa | Tecnología |
 |------|-----------|
 | Lenguaje | Kotlin 2.0 |
-| UI | Jetpack Compose + Material 3 |
+| UI | Jetpack Compose |
 | Arquitectura | MVVM + StateFlow |
-| Networking | Retrofit 2 + OkHttp |
-| Serialización | Gson |
-| Almacenamiento local | DataStore Preferences |
-| Calendario | Kizitonwose Calendar Compose |
+| HTTP | Retrofit |
+| Persistencia local | DataStore |
 | Audio | MediaRecorder (OGG/Opus) |
-| Inyección de dependencias | Manual (no Hilt) |
-| Mínimo SDK | Android 8.0 (API 26) |
+| Auth | JWT + refresh token interceptor |
 
 ---
 
-## 📁 Estructura del proyecto
+## 📁 Estructura
 
 ```
-app/src/main/java/dev/aroca/voice2taskapp/
-├── data/
-│   ├── api/
-│   │   ├── ApiClient.kt          # Retrofit con interceptor JWT
-│   │   ├── AuthApi.kt            # Endpoints de autenticación
-│   │   ├── ListasApi.kt          # Endpoints de listas
-│   │   ├── TareasApi.kt          # Endpoints de tareas
-│   │   ├── ExternalApiClient.kt  # Retrofit para Trello y Notion
-│   │   ├── TrelloApi.kt          # API Trello (tableros, listas, tarjetas)
-│   │   └── NotionApi.kt          # API Notion (bases de datos, páginas)
-│   ├── model/
-│   │   ├── Tarea.kt
-│   │   ├── Lista.kt
-│   │   └── AudioProcesamientoResponse.kt
-│   └── repository/
-│       ├── TokenRepository.kt    # DataStore: JWT, Groq Key, Trello, Notion
-│       ├── TareasRepository.kt
-│       └── ListasRepository.kt
+app/src/main/java/com/arocadev/voice2task/
 ├── ui/
-│   ├── screens/
-│   │   ├── HomeScreen.kt         # Listas + tabs de Importantes y Calendario
-│   │   ├── ListaDetailScreen.kt  # Tareas de una lista con filtros y búsqueda
-│   │   ├── TareaDetailScreen.kt  # Detalle y edición de tarea
-│   │   ├── GrabarAudioScreen.kt  # Grabación, procesado y confirmación de tarea
-│   │   ├── CalendarioScreen.kt   # Calendario mensual con tareas por fecha
-│   │   ├── ImportantesScreen.kt  # Tab de tareas importantes
-│   │   └── SettingsScreen.kt     # Ajustes, integraciones, FAQ y aviso legal
-│   └── theme/
-│       ├── Color.kt
-│       ├── Theme.kt
-│       └── Type.kt
-├── viewmodel/
-│   ├── AuthViewModel.kt
-│   ├── ListasViewModel.kt
-│   ├── TareasViewModel.kt
-│   └── GrabarAudioViewModel.kt   # Estados de grabación y procesamiento
-└── MainActivity.kt
+│   ├── screens/        # Pantallas Compose
+│   └── components/     # Componentes reutilizables
+├── viewmodel/          # ViewModels MVVM + StateFlow
+├── data/
+│   ├── repository/     # Repositorios
+│   └── datastore/      # Persistencia local (tokens, ajustes)
+└── network/
+    ├── api/            # Interfaces Retrofit
+    └── client/         # OkHttp + interceptores JWT
 ```
 
 ---
 
 ## 🚀 Instalación
 
-### Requisitos
-- Android Studio Hedgehog o superior
-- Android 8.0+ en el dispositivo o emulador
-- Backend Voice2Task corriendo (local o desplegado)
-- API Key de Groq (gratuita en [console.groq.com](https://console.groq.com))
-
-### Pasos
-
 ```bash
-git clone https://github.com/ArocaDev/voice2task-android.git
+git clone https://github.com/ArocaDev/voice2task-android
 ```
 
-1. Abre el proyecto en Android Studio
-2. En `data/api/ApiClient.kt` cambia la `BASE_URL` a la URL de tu backend
-3. Compila y ejecuta en tu dispositivo o emulador
-4. Regístrate, ve a Ajustes → Integraciones → Groq API Key y añade tu clave
-
----
-
-## 📱 Flujo principal
+Abre el proyecto en **Android Studio**, configura la URL del backend en `local.properties`:
 
 ```
-Abrir lista → Pulsar micrófono → Grabar nota de voz → Finalizar
-     ↓
-Transcribiendo → Entendiendo → Creando tarea
-     ↓
-Revisar tarea (editar título, descripción, fecha, prioridad)
-     ↓
-Seleccionar destinos (Voice2Task / Trello / Notion)
-     ↓
-Guardar → Tarea creada en todos los destinos seleccionados
+BASE_URL=http://tu-servidor:8000
 ```
 
----
+Ejecuta en emulador o dispositivo físico.
 
-## 🗺️ Roadmap
+Para instalar directamente la APK, descárgala desde [GitHub Releases](https://github.com/ArocaDev/voice2task-android/releases).
 
-- [ ] Google Calendar como integración
-- [ ] Widgets Android para creación rápida desde la pantalla de inicio
-- [ ] Notificaciones push para tareas con fecha límite próxima
-- [ ] Estadísticas de productividad
-- [ ] Sincronización en tiempo real con WebSockets
+> El backend debe estar desplegado y accesible para que la app funcione.
 
 ---
 
@@ -172,6 +129,18 @@ Guardar → Tarea creada en todos los destinos seleccionados
 
 ---
 
+## 🗺️ Roadmap
+
+- [x] Auth completo (JWT + refresh tokens)
+- [x] Grabación y transcripción de voz
+- [x] Extracción estructurada con LLM
+- [x] Integraciones Trello y Notion
+- [x] Calendario con tareas por fecha
+- [x] APK en GitHub Releases
+- [ ] Deploy del backend en Sentinel (plataforma propia)
+
+---
+
 ## 👤 Autor
 
 **Alejandro Rodríguez Calabuig**  
@@ -181,4 +150,4 @@ Guardar → Tarea creada en todos los destinos seleccionados
 
 ## 📄 Licencia
 
-Proyecto personal en desarrollo. No licenciado para uso comercial.  
+Proyecto personal en desarrollo. No licenciado para uso comercial.
